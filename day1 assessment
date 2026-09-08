@@ -47,7 +47,10 @@ public class Assessment_testcase1 {
 
 package Selenium_Assessment;
 
+import java.time.Duration;
+
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -57,27 +60,31 @@ public class Assessment_testcase2 {
 
 	public static void main(String[] args) throws Exception {
 		// TODO Auto-generated method stub
-		 WebDriver driver = new ChromeDriver();
-		 driver.manage().window().maximize();
-		 driver.get("https://www.myntra.com/");
-		 Thread.sleep(3000);
-		 WebElement searchBox = driver.findElement(By.className("desktop-searchBar"));
-         searchBox.sendKeys("T Shirt");
-         searchBox.sendKeys(Keys.ENTER);
-         Thread.sleep(4000);
-         WebElement firstProduct = driver.findElements(By.className("product-base")).get(0);
-         WebElement wishlistButton = firstProduct.findElement(By.xpath(".//span[contains(text(),'wishlist')]"));
-         wishlistButton.click();
-         Thread.sleep(2000);
-         System.out.println("Product added to wishlist.");
+		WebDriver driver= new ChromeDriver();
+	     driver.manage().window().maximize();
+	     driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
+	     driver.get("https://www.myntra.com/");
+	     driver.findElement(By.className("desktop-searchBar")).sendKeys("lip blam",Keys.ENTER);
+	     Thread.sleep(3000);
+	     WebElement ele= driver.findElement(By.xpath("//span[@class='product-wishlistFlex product-actionsButton product-wishlist '][1]"));
+	     Thread.sleep(2000);
+	     JavascriptExecutor js = (JavascriptExecutor)driver;
+	     js.executeScript("arguments[0].click()", ele);
+	     if(driver.getCurrentUrl().equals("https://www.myntra.com/login?referer=https://www.myntra.com/lip-blam?rawQuery=lip%20blam"))
+	     {
+	    	 System.out.println("Product is added to whislist ");
+	     }
+	     else
+	     {
+	    	 System.out.println("Product is not added to whislist ");
+	     }
+	}
+
 
 
 
 
 	}
-
-}
-
 
 
 
