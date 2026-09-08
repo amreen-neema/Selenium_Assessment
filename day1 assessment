@@ -1,0 +1,88 @@
+#test case 1
+
+package Selenium_Assessment;
+
+import java.io.File;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+
+public class Assessment_testcase1 {
+
+	public static void main(String[] args) throws Exception {
+		// TODO Auto-generated method stub
+		 WebDriver driver = new ChromeDriver();
+		 driver.manage().window().maximize();
+		 driver.get("https://www.saucedemo.com/");
+		 driver.findElement(By.id("user-name")).sendKeys("standard_user");
+		 driver.findElement(By.id("password")).sendKeys("secret_sauce");
+		 driver.findElement(By.id("login-button")).click();
+		 Thread.sleep(2000);
+		 JavascriptExecutor js = (JavascriptExecutor) driver;
+		 js.executeScript("window.scrollTo(0, document.body.scrollHeight)");
+		 Thread.sleep(2000);
+		 TakesScreenshot ts = (TakesScreenshot) driver;
+		 File source = ts.getScreenshotAs(OutputType.FILE);
+		 File destination = new File("./ss/products-page.png");
+		 source.renameTo(destination);
+		 System.out.println("Screenshot saved successfully.");
+	     driver.quit();
+
+	}
+
+}
+
+
+
+
+
+
+
+#test case 2
+
+
+package Selenium_Assessment;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+
+public class Assessment_testcase2 {
+
+	public static void main(String[] args) throws Exception {
+		// TODO Auto-generated method stub
+		 WebDriver driver = new ChromeDriver();
+		 driver.manage().window().maximize();
+		 driver.get("https://www.myntra.com/");
+		 Thread.sleep(3000);
+		 WebElement searchBox = driver.findElement(By.className("desktop-searchBar"));
+         searchBox.sendKeys("T Shirt");
+         searchBox.sendKeys(Keys.ENTER);
+         Thread.sleep(4000);
+         WebElement firstProduct = driver.findElements(By.className("product-base")).get(0);
+         WebElement wishlistButton = firstProduct.findElement(By.xpath(".//span[contains(text(),'wishlist')]"));
+         wishlistButton.click();
+         Thread.sleep(2000);
+         System.out.println("Product added to wishlist.");
+
+
+
+
+	}
+
+}
+
+
+
+
+
+
+
+
+
