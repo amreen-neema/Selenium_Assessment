@@ -1,0 +1,100 @@
+teast 1
+
+package Assesment;
+import java.time.Duration;
+import org.openqa.selenium.By;
+import org.openqa.selenium.edge.EdgeDriver;
+import org.openqa.selenium.edge.EdgeOptions;
+import org.openqa.selenium.WebDriver;
+public class Day3testcase1 {
+public static void main(String[] args) throws InterruptedException {
+				// TODO Auto-generated method stub
+				EdgeOptions option = new EdgeOptions();
+				//option.addArguments("--disable-notifications");
+				option.addArguments("--incognito");
+				WebDriver driver = new EdgeDriver(option);
+				driver.manage().window().maximize();
+				driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(15));
+				driver.get("https://www.easemytrip.com/");
+				
+				//selecting state from field
+				driver.findElement(By.id("FromSector_show")).click();
+				driver.findElement(By.id("airport2")).click();
+				
+				//selecting state to field
+				driver.findElement(By.xpath("(//span[text()='Mumbai(BOM)'])[2]")).click();
+				
+				//selecting departure date
+				driver.findElement(By.xpath("(//li[text()='23'])[1]")).click();
+				
+				//selecting 2 adults from travellers & class
+				driver.findElement(By.id("spnTraveller")).click();
+				driver.findElement(By.xpath("(//button[@field='quantity'])[2]")).click();
+				
+				//Clicking on search button
+				driver.findElement(By.className("srchBtnSe")).click();
+				
+				//verify whether search page is visible or not
+				String url = driver.getCurrentUrl();
+				if(url.contains("https://www.easemytrip.com/flight-search/listing?"))
+				{
+					System.out.println("Page is visible");
+				}
+				else
+				{
+					System.out.println("Page is not visible");
+				}
+				
+				driver.quit();
+				
+			}
+
+
+}
+
+
+test case 2
+
+
+
+package Assesment;
+import java.time.Duration;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.edge.EdgeDriver;
+import org.openqa.selenium.WebDriver;
+public class Day3testcase2 {
+public static void main(String[] args) throws InterruptedException {
+		
+		WebDriver driver = new EdgeDriver();
+		driver.manage().window().maximize();
+		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(15));
+		driver.navigate().to("https://demoapps.qspiders.com/ui/datePick?sublist=0");
+		Thread.sleep(3000);
+		
+		//clicking on calender
+		WebElement date = driver.findElement(By.xpath("//input[@placeholder='Select A Date']"));
+		date.click();
+		Thread.sleep(2000);
+		
+		//navigating to next month
+		driver.findElement(By.xpath("//button[@aria-label='Next Month']")).click();
+		
+		//clicking on date
+		driver.findElement(By.xpath("//div[@aria-label='Choose Thursday, October 15th, 2026']")).click();
+		Thread.sleep(2000);
+		
+		//validating the date
+		String validate = date.getAttribute("Value");
+		if (validate.equals("15/10/2026"))
+		{
+			System.out.println("Date is displayed");
+		}
+		else
+		{
+			System.out.println("Date is not displayed");
+		}
+		driver.quit();
+	}
+
+}
