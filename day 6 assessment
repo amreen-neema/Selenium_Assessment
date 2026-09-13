@@ -1,0 +1,207 @@
+Test case 1
+
+package datadriventesting;
+
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.time.Duration;
+import java.util.Properties;
+
+import org.apache.poi.ss.usermodel.DataFormatter;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+public class OrangeHRM_Employee_DDT {
+
+	public static void main(String[] args) throws IOException {
+		// TODO Auto-generated method stub
+		FileInputStream propFis =
+                new FileInputStream("./src/test/resources/DDT/config.properties");
+
+        Properties prop = new Properties();
+        prop.load(propFis);
+
+        String url = prop.getProperty("orangehrm.url");
+        String adminUsername = prop.getProperty("orangehrm.username");
+        String adminPassword = prop.getProperty("orangehrm.password");
+
+        propFis.close();
+        
+        FileInputStream excelFis =
+                new FileInputStream(
+                        "./src/test/resources/DDT/orangehrm_employee.xlsx");
+
+        Workbook wb = WorkbookFactory.create(excelFis);
+
+        Sheet sh = wb.getSheet("Sheet1");
+
+        Row row = sh.getRow(1);
+
+        DataFormatter df = new DataFormatter();
+
+        String firstName = df.formatCellValue(row.getCell(0));
+        String middleName = df.formatCellValue(row.getCell(1));
+        String lastName = df.formatCellValue(row.getCell(2));
+        String employeeId = df.formatCellValue(row.getCell(3));
+        String username = df.formatCellValue(row.getCell(4));
+        String password = df.formatCellValue(row.getCell(5));
+        String confirmPassword = df.formatCellValue(row.getCell(6));
+        String role = df.formatCellValue(row.getCell(7));
+        String status = df.formatCellValue(row.getCell(8));
+
+        wb.close();
+        excelFis.close();
+        
+        WebDriver driver = new ChromeDriver();
+
+        driver.manage().window().maximize();
+
+        WebDriverWait wait = new WebDriverWait(
+                driver, Duration.ofSeconds(15));
+        
+        driver.get(url);
+
+        wait.until(ExpectedConditions.visibilityOfElementLocated(
+                By.name("username"))).sendKeys(adminUsername);
+
+        driver.findElement(By.name("password"))
+                .sendKeys(adminPassword);
+
+        driver.findElement(By.xpath("//button[@type='submit']"))
+                .click();
+        
+        wait.until(ExpectedConditions.elementToBeClickable(
+                By.xpath("//span[text()='PIM']"))).click();
+        
+        wait.until(ExpectedConditions.elementToBeClickable(
+                By.xpath("//button[normalize-space()='Add']"))).click();
+        
+        wait.until(ExpectedConditions.visibilityOfElementLocated(
+                By.name("firstName"))).sendKeys(firstName);
+
+        driver.findElement(By.name("middleName"))
+                .sendKeys(middleName);
+
+        driver.findElement(By.name("lastName"))
+                .sendKeys(lastName);
+
+      
+        WebElement employeeIdBox = driver.findElement(
+                By.xpath("//label[text()='Employee Id']/parent::div/following-sibling::div//input"));
+
+        employeeIdBox.clear();
+        employeeIdBox.sendKeys(employeeId);
+        
+        WebElement toggle = wait.until(
+                ExpectedConditions.elementToBeClickable(
+                        By.xpath("//p[text()='Create Login Details']/following-sibling::div//span")));
+
+        toggle.click();
+        
+        wait.until(ExpectedConditions.visibilityOfElementLocated(
+                By.xpath("//label[text()='Username']/parent::div/following-sibling::div//input")))
+                .sendKeys(username);
+
+        driver.findElement(
+                By.xpath("//label[text()='Password']/parent::div/following-sibling::div//input"))
+                .sendKeys(password);
+
+        driver.findElement(
+                By.xpath("//label[text()='Confirm Password']/parent::div/following-sibling::div//input"))
+                .sendKeys(confirmPassword);
+        
+        driver.findElement(By.xpath("//button[@type='submit']"))
+        .click();
+
+
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//h6[text()='Personal Details']")));
+
+        System.out.println("Employee created successfully.");
+        
+        wait.until(ExpectedConditions.elementToBeClickable(
+                By.xpath("//span[text()='Admin']"))).click();
+        
+     // Select User Role
+
+        WebElement userRoleDropdown = wait.until(
+                ExpectedConditions.elementToBeClickable(
+                        By.xpath("//label[text()='User Role']/ancestor::div[contains(@class,'oxd-input-group')]//div[contains(@class,'oxd-select-text')]")
+                )
+        );
+
+        userRoleDropdown.click();
+
+        wait.until(ExpectedConditions.visibilityOfElementLocated(
+                By.xpath("//div[@role='option']")
+        ));
+
+        driver.findElement(
+                By.xpath("//div[@role='option']//span[normalize-space()='" + role + "']")
+        ).click();
+        
+     // Select Status
+
+        WebElement statusDropdown = wait.until(
+                ExpectedConditions.elementToBeClickable(
+                        By.xpath("//label[text()='Status']/ancestor::div[contains(@class,'oxd-input-group')]//div[contains(@class,'oxd-select-text')]")
+                )
+        );
+
+        statusDropdown.click();
+
+        wait.until(ExpectedConditions.visibilityOfElementLocated(
+                By.xpath("//div[@role='option']")
+        ));
+
+        driver.findElement(
+                By.xpath("//div[@role='option']//span[normalize-space()='" + status + "']")
+        ).click();
+        
+// Wait for results
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//div[contains(@class,'oxd-table-body')]")));
+        
+        String pageSource = driver.getPageSource();
+
+        if (pageSource.contains(username)) {
+
+            System.out.println(
+                    "PASS: Employee " + username + " found in records.");
+
+        } else {
+
+            System.out.println(
+                    "FAIL: Employee " + username + " not found.");
+        }
+        
+        driver.findElement(
+                By.xpath("//p[contains(@class,'oxd-userdropdown-name')]"))
+                .click();
+
+        wait.until(ExpectedConditions.elementToBeClickable(
+                By.xpath("//a[text()='Logout']"))).click();
+
+        System.out.println("Logout successful.");
+
+        driver.quit();
+
+
+        
+        
+
+        
+        
+
+
+
+
+	}
+
+}
