@@ -1,1 +1,24 @@
+Test Case 1
 
+Navigate to demoAppsQspiders toggle page
+Click on disabled toggle buttons
+Click on Place Order button
+Verify that order is placed.
+
+Test Case 2
+
+Navigate to demoAppsQspiders slider page
+Slide the bar till even cotton jacket and verify.
+
+Test Case 3
+
+Navigate to demoAppsQspiders draganddrop multiple page
+Drag and drop the accessories accordingly.
+Click on Place order button.
+Verify that order is placed.
+
+Test Case 4
+
+Navigate to ShopperStack application
+Click on any product
+Check the product is available to that pincode or not.
